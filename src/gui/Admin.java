@@ -10,14 +10,14 @@ import oop.classes.actors.User;
 
 
 //public class EmployeeSelfService extends javax.swing.JFrame { --> no need to specify javax.swing.* since it was already impored up there!
-public class EmployeeSelfService extends JFrame {
+public class Admin extends JFrame {
     private User loggedInUser; //to store logged in user's data so we can display it in the gui
     private User user; //store user info so it can be accessed anywhere in the class
     private JLabel lblEmployeeUser; //declared to remove lblEmployeeUser error, bec it needs a jlabel variable
-    public EmployeeSelfService(User user) {
+    public Admin(User user) {
         
         
-        setTitle("MotorPH Portal | Welcome, " + user.getFirstName() + " " + user.getLastName() + "!");
+        setTitle("MotorPH Admin Dashboard | Welcome, " + user.getFirstName() + " " + user.getLastName() + "!");
         // Update the label inside the UI with the user's name
         // Check if lblEmployeeUser is initialized before setting text
         if (lblWelcomeMessage != null) {
@@ -65,6 +65,11 @@ public class EmployeeSelfService extends JFrame {
         redOrangeDesign = new javax.swing.JLabel();
         lblWelcomeMessage = new javax.swing.JLabel();
         MotorPHLogo = new javax.swing.JLabel();
+        leaveRequestManagement = new javax.swing.JButton();
+        attendanceeTracking = new javax.swing.JButton();
+        empManagement = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        emppagemenuPNL1 = new javax.swing.JPanel();
 
         jPopupMenu1.setBackground(new java.awt.Color(0, 0, 0));
         jPopupMenu1.setForeground(new java.awt.Color(0, 0, 0));
@@ -110,7 +115,7 @@ public class EmployeeSelfService extends JFrame {
         employeepagenameLBL.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         employeepagenameLBL.setForeground(new java.awt.Color(255, 204, 204));
         employeepagenameLBL.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        employeepagenameLBL.setText("Employee User");
+        employeepagenameLBL.setText("Admin User");
         employeepagenameLBL.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
 
         logoutemppgPB.setBackground(new java.awt.Color(128, 12, 12));
@@ -163,7 +168,7 @@ public class EmployeeSelfService extends JFrame {
             }
         });
         emppagemainPNL.add(aboutPB);
-        aboutPB.setBounds(170, 160, 200, 110);
+        aboutPB.setBounds(190, 140, 200, 80);
 
         personaldetPB.setBackground(new java.awt.Color(153, 0, 0));
         personaldetPB.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -176,7 +181,7 @@ public class EmployeeSelfService extends JFrame {
             }
         });
         emppagemainPNL.add(personaldetPB);
-        personaldetPB.setBounds(400, 160, 200, 110);
+        personaldetPB.setBounds(410, 140, 200, 80);
 
         attendanceemppgPB.setBackground(new java.awt.Color(153, 0, 0));
         attendanceemppgPB.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -189,7 +194,7 @@ public class EmployeeSelfService extends JFrame {
             }
         });
         emppagemainPNL.add(attendanceemppgPB);
-        attendanceemppgPB.setBounds(630, 160, 200, 110);
+        attendanceemppgPB.setBounds(190, 230, 200, 80);
 
         payrollemppgPB.setBackground(new java.awt.Color(153, 0, 0));
         payrollemppgPB.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -202,7 +207,7 @@ public class EmployeeSelfService extends JFrame {
             }
         });
         emppagemainPNL.add(payrollemppgPB);
-        payrollemppgPB.setBounds(280, 290, 200, 110);
+        payrollemppgPB.setBounds(410, 230, 200, 80);
 
         requestleaveemppgPB.setBackground(new java.awt.Color(153, 0, 0));
         requestleaveemppgPB.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
@@ -215,30 +220,93 @@ public class EmployeeSelfService extends JFrame {
             }
         });
         emppagemainPNL.add(requestleaveemppgPB);
-        requestleaveemppgPB.setBounds(530, 290, 200, 110);
+        requestleaveemppgPB.setBounds(410, 320, 200, 80);
 
         redOrangeDesign.setIcon(new javax.swing.ImageIcon(getClass().getResource("/media/Red-Orange Design.png"))); // NOI18N
         redOrangeDesign.setText("RedOrangeDesign");
         redOrangeDesign.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
         redOrangeDesign.setPreferredSize(new java.awt.Dimension(725, 500));
         emppagemainPNL.add(redOrangeDesign);
-        redOrangeDesign.setBounds(-80, -40, 510, 520);
+        redOrangeDesign.setBounds(-10, -20, 510, 500);
 
         lblWelcomeMessage.setBackground(new java.awt.Color(0, 0, 51));
         lblWelcomeMessage.setFont(new java.awt.Font("Segoe UI", 1, 50)); // NOI18N
         lblWelcomeMessage.setForeground(new java.awt.Color(51, 0, 0));
         lblWelcomeMessage.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblWelcomeMessage.setText("Employee Self Service");
+        lblWelcomeMessage.setText("Admin Dashboard");
         lblWelcomeMessage.setVerticalAlignment(javax.swing.SwingConstants.TOP);
         lblWelcomeMessage.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         lblWelcomeMessage.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
         emppagemainPNL.add(lblWelcomeMessage);
-        lblWelcomeMessage.setBounds(140, 50, 640, 100);
+        lblWelcomeMessage.setBounds(250, 47, 610, 60);
         lblWelcomeMessage.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Top, Left, Bottom, Right padding
 
         MotorPHLogo.setIcon(new javax.swing.ImageIcon(getClass().getResource("/media/MotorLogo 81x84.png"))); // NOI18N
         emppagemainPNL.add(MotorPHLogo);
-        MotorPHLogo.setBounds(730, 50, 100, 90);
+        MotorPHLogo.setBounds(790, 30, 100, 90);
+
+        leaveRequestManagement.setBackground(new java.awt.Color(153, 0, 0));
+        leaveRequestManagement.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        leaveRequestManagement.setForeground(new java.awt.Color(255, 255, 255));
+        leaveRequestManagement.setIcon(new javax.swing.ImageIcon(getClass().getResource("/media/REQUEST LEAVE 64 X 64.png"))); // NOI18N
+        leaveRequestManagement.setText("Leave Request Management");
+        leaveRequestManagement.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                leaveRequestManagementActionPerformed(evt);
+            }
+        });
+        emppagemainPNL.add(leaveRequestManagement);
+        leaveRequestManagement.setBounds(630, 320, 270, 80);
+
+        attendanceeTracking.setBackground(new java.awt.Color(153, 0, 0));
+        attendanceeTracking.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        attendanceeTracking.setForeground(new java.awt.Color(255, 255, 255));
+        attendanceeTracking.setIcon(new javax.swing.ImageIcon(getClass().getResource("/media/ATTENDANCE 64 X 64.png"))); // NOI18N
+        attendanceeTracking.setText("Attendance Tracking");
+        attendanceeTracking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                attendanceeTrackingActionPerformed(evt);
+            }
+        });
+        emppagemainPNL.add(attendanceeTracking);
+        attendanceeTracking.setBounds(630, 230, 270, 80);
+
+        empManagement.setBackground(new java.awt.Color(153, 0, 0));
+        empManagement.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        empManagement.setForeground(new java.awt.Color(255, 255, 255));
+        empManagement.setIcon(new javax.swing.ImageIcon(getClass().getResource("/media/DETAILS 64 X 64.png"))); // NOI18N
+        empManagement.setText("Employee Management");
+        empManagement.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                empManagementActionPerformed(evt);
+            }
+        });
+        emppagemainPNL.add(empManagement);
+        empManagement.setBounds(630, 140, 270, 80);
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel1.setText("Employee Name");
+        jLabel1.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+        jLabel1.setVerticalTextPosition(javax.swing.SwingConstants.TOP);
+        emppagemainPNL.add(jLabel1);
+        jLabel1.setBounds(480, 100, 138, 25);
+
+        emppagemenuPNL1.setBackground(new java.awt.Color(188, 12, 12));
+        emppagemenuPNL1.setForeground(new java.awt.Color(51, 51, 55));
+
+        javax.swing.GroupLayout emppagemenuPNL1Layout = new javax.swing.GroupLayout(emppagemenuPNL1);
+        emppagemenuPNL1.setLayout(emppagemenuPNL1Layout);
+        emppagemenuPNL1Layout.setHorizontalGroup(
+            emppagemenuPNL1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 70, Short.MAX_VALUE)
+        );
+        emppagemenuPNL1Layout.setVerticalGroup(
+            emppagemenuPNL1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 480, Short.MAX_VALUE)
+        );
+
+        emppagemainPNL.add(emppagemenuPNL1);
+        emppagemenuPNL1.setBounds(110, 0, 70, 480);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -289,6 +357,18 @@ public class EmployeeSelfService extends JFrame {
 
     }//GEN-LAST:event_requestleaveemppgPBActionPerformed
 
+    private void leaveRequestManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leaveRequestManagementActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_leaveRequestManagementActionPerformed
+
+    private void attendanceeTrackingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attendanceeTrackingActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_attendanceeTrackingActionPerformed
+
+    private void empManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empManagementActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_empManagementActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -308,13 +388,18 @@ public class EmployeeSelfService extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel MotorPHLogo;
     private javax.swing.JButton aboutPB;
+    private javax.swing.JButton attendanceeTracking;
     private javax.swing.JButton attendanceemppgPB;
     private javax.swing.JLabel dateTime;
+    private javax.swing.JButton empManagement;
     private javax.swing.JLabel employeepagenameLBL;
     private javax.swing.JPanel emppagemainPNL;
     private javax.swing.JPanel emppagemenuPNL;
+    private javax.swing.JPanel emppagemenuPNL1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JLabel lblWelcomeMessage;
+    private javax.swing.JButton leaveRequestManagement;
     private javax.swing.JButton logoutemppgPB;
     private javax.swing.JButton payrollemppgPB;
     private javax.swing.JButton personaldetPB;

@@ -72,49 +72,58 @@ public class Login extends javax.swing.JFrame {
     }
     
     //Will change into this if each user role will have a landing page with both regular employee features and admin features based on their role
-    /**
-     * private void redirectUserBasedOnRole(User user) {
-    if (user == null) {
-        JOptionPane.showMessageDialog(this, "Invalid user object.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
-    }
-
-    String role = user.getRole();
-
-    switch (role) {
-        case "HR":
-            HRDashboard hrDashboard = new HRDashboard(user);
-            hrDashboard.setVisible(true);
-            break;
+    
+//    private void redirectUserBasedOnRole(User user) {
+//    if (user == null) {
+//        JOptionPane.showMessageDialog(this, "Invalid user object.", "Error", JOptionPane.ERROR_MESSAGE);
+//        return;
+//    }
+//
+//    String role = user.getRole();
+//
+//    switch (role) {
+//        case "HR":
+//            HRDashboard hrDashboard = new HRDashboard(user);
+//            hrDashboard.setVisible(true);
+//            break;
+//            
+//      
+//
+//        default:
+//            JOptionPane.showMessageDialog(this, "Unknown role: " + role, "Error", JOptionPane.ERROR_MESSAGE);
+//            break;
         
-        case "IT":
-            ITDashboard itDashboard = new ITDashboard(user);
-            itDashboard.setVisible(true);
-            break;
-        
-        case "EMPLOYEE":
-            EmployeeSelfService employeeSelfService = new EmployeeSelfService(user);
-            employeeSelfService.setVisible(true);
-            break;
-        
-        case "IMMEDIATE_SUPERVISOR":
-            SupervisorDashboard supervisorDashboard = new SupervisorDashboard(user);
-            supervisorDashboard.setVisible(true);
-            break;
-        
-        case "ACCOUNTING":
-            AccountingDashboard accountingDashboard = new AccountingDashboard(user);
-            accountingDashboard.setVisible(true);
-            break;
-
-        default:
-            JOptionPane.showMessageDialog(this, "Unknown role: " + role, "Error", JOptionPane.ERROR_MESSAGE);
-            return; // Prevents closing the login window if role is invalid
-    }
-
-    this.dispose(); // Close the login window after opening the correct dashboard
-}
-    */
+//        case "IT":
+//            ITDashboard itDashboard = new ITDashboard(user);
+//            itDashboard.setVisible(true);
+//            break;
+//        
+//        case "EMPLOYEE":
+//            EmployeeSelfService employeeSelfService = new EmployeeSelfService(user);
+//            employeeSelfService.setVisible(true);
+//            break;
+//        
+//            case "IMMEDIATE_SUPERVISOR":
+//                SupervisorDashboard supervisorDashboard = new SupervisorDashboard(user);
+//                supervisorDashboard.setVisible(true);
+//                break;
+////        
+//        case "ACCOUNTING":
+//            AccountingDashboard accountingDashboard = new AccountingDashboard(user);
+//            accountingDashboard.setVisible(true);
+//            break;
+//
+//        default:
+//            JOptionPane.showMessageDialog(this, "Unknown role: " + role, "Error", JOptionPane.ERROR_MESSAGE);
+//            return; // Prevents closing the login window if role is invalid
+//    
+//    
+//    }
+//
+//    this.dispose(); // Close the login window after opening the correct dashboard
+//    
+//}
+//    
 
 
 
@@ -239,7 +248,7 @@ public class Login extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -298,8 +307,7 @@ public class Login extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+        
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
