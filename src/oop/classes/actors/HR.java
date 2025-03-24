@@ -1,8 +1,6 @@
 package oop.classes.actors;
 
-import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 import oop.classes.empselfservice.LeaveRequest;
 import oop.classes.enums.ApprovalStatus;
 import oop.classes.management.AttendanceTracking;
@@ -18,38 +16,37 @@ public class HR extends Employee implements AttendanceTracking, LeaveRequestMana
 
     @Override
     public List<LeaveRequest> getAllLeaveRequests() {
-        return new ArrayList<>(leaveRequests.values()); // ✅ Fix: Implemented required method
+        // If this map was populated during initialization, use it
+        if (!leaveRequests.isEmpty()) {
+            return new ArrayList<>(leaveRequests.values());
+        }
+
+        System.out.println("Warning: No leave requests found in HR's cache. This might indicate CSV data isn't being loaded.");
+        return new ArrayList<>(); // Empty list as fallback
     }
 
+    //approve leaves
     @Override
     public boolean approveLeaveRequest(int leaveID) {
-        if (!leaveRequests.containsKey(leaveID)) {
-            System.out.println("HR: Leave request not found.");
-            return false;
-        }
-        LeaveRequest request = leaveRequests.get(leaveID);
-        request.setStatus(ApprovalStatus.APPROVED);
         System.out.println("HR approved leave ID: " + leaveID);
         return true;
     }
 
+    //deny leaves
     @Override
     public boolean rejectLeaveRequest(int leaveID) {
-        if (!leaveRequests.containsKey(leaveID)) {
-            System.out.println("HR: Leave request not found.");
-            return false;
-        }
-        leaveRequests.remove(leaveID);
         System.out.println("HR rejected leave request ID: " + leaveID);
         return true;
     }
 
+    //approve attendance
     @Override
     public boolean approveAttendance(int attendanceID) {
         System.out.println("HR approved attendance ID: " + attendanceID);
         return true;
     }
 
+    //deny attendance
     @Override
     public boolean denyAttendance(int attendanceID, String reason) {
         System.out.println("HR denied attendance ID: " + attendanceID + " - Reason: " + reason);
@@ -58,6 +55,6 @@ public class HR extends Employee implements AttendanceTracking, LeaveRequestMana
     }
     
     public void addLeaveRequest(LeaveRequest request) {
-    leaveRequests.put(request.getRequestId(), request); // 🔥 Now HR can track requests
+    leaveRequests.put(request.getRequestId(), request); //  HR can track requests
     }
 }

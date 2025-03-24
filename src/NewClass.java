@@ -8,5 +8,5 @@
  * @author Admin
  */
 public class NewClass {
-    //Chad's code as base (March 9)
+    //MS2 Code Revised (March 24)
 }

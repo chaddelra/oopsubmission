@@ -193,6 +193,22 @@ public class Employee extends User {
     public String getFullName() {
         return getFirstName() + " " + getLastName(); // using firstName and lastName inherited from User class
     }
+    
+    /**
+     * Allows system to update employee basic monthly salary
+     * @param basicSalary 
+     */
+    public void setBasicSalary(double basicSalary) {
+    this.basicSalary = basicSalary;
+}
+    /**
+     * setting employee hourly pay rate
+     * @param hourlyRate 
+     * 
+     */
+    public void setHourlyRate(double hourlyRate) {
+        this.hourlyRate = hourlyRate;
+    }
 
     /**
      *
@@ -202,33 +218,6 @@ public class Employee extends User {
     public Employee viewEmployeeDetails() {
         return this; // return the current employee object
     }
-
-    // this method allows editing of the employee's address and phone number
-    public boolean editEmployeeDetails(String address, String phoneNo) {
-        this.address = address; // update the address
-        this.phoneNo = phoneNo; // update the phone number
-        return true; // return true indicating success
-    }
-
-    public boolean editEmployeeDetails(String address) {
-        this.address = address;
-        return true;
-    }
-
-    public boolean editEmployeeDetails(String address, String phoneNo, String email) {
-        this.address = address;
-        this.phoneNo = phoneNo;
-        this.setEmail(email); // Use setEmail to validate email
-        return true;
-    }
-
-    //ignore this, not sure how what we/re going to use for login redirection yet
-    /*
-    @Override
-    public boolean login(String email, String password) {
-        return super.login(email, password) && (empStatus == EmploymentStatus.REGULAR || empStatus == EmploymentStatus.PROBATIONARY);
-    }
-    */
 
     @Override
     public void logout() {

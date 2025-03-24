@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package oop.classes.management;
 
 import CSV.CSVDatabaseProcessor;
@@ -20,10 +16,10 @@ import oop.classes.actors.User;
  * @author Admin
  */
 
-    /**
-     * Handles user authentication by validating credentials from a CSV database.
-     * It determines the user's role and creates the appropriate user object.
-     */
+/**
+ * Handles user authentication by validating credentials from a CSV database.
+ * It determines the user's role and creates the appropriate user object.
+ */
 public class UserAuthentication {
    private final CSVDatabaseProcessor databaseProcessor;
 
@@ -51,16 +47,23 @@ public class UserAuthentication {
             System.out.println("No user credentials found. Please check if the CSV file is loaded.");
             return null;
         }
+        
+        
 
         // Loop through the credentials and check if the input matches any stored record        
         for (Map<String, String> record : userCredentialRecords) {
             String storedEmail = record.get("Email");
             String storedPassword = record.get("Password");
         
-        // Credentials match, retrieve employee details
+            // Credentials match, retrieve employee details
             if (email.equals(storedEmail) && password.equals(storedPassword)) {
-                int employeeID = Integer.parseInt(record.get("Employee ID"));
-                return getUserByID(employeeID); // Retrieve the User object
+                try {
+                    int employeeID = Integer.parseInt(record.get("Employee ID"));
+                    return getUserByID(employeeID); // Retrieve the User object
+                } catch (NumberFormatException e) {
+                    System.err.println("Invalid Employee ID format: " + record.get("Employee ID"));
+                    return null;
+                }
             }
         }
         return null; // Return null if no matching credentials are found
@@ -76,7 +79,19 @@ public class UserAuthentication {
         Map<String, String> employeeRecord = databaseProcessor.getEmployeeRecordsByEmployeeId(String.valueOf(employeeID));
 
         if (employeeRecord != null) {
-            return createUserFromRecord(employeeRecord); // Create the appropriate User object
+            try {
+                return createUserFromRecord(employeeRecord); // Create the appropriate User object
+            } catch (Exception e) {
+                System.err.println("Error creating user from record: " + e.getMessage());
+                // Debug information
+                System.err.println("Employee ID: " + employeeID);
+                if (employeeRecord != null) {
+                    for (Map.Entry<String, String> entry : employeeRecord.entrySet()) {
+                        System.err.println(entry.getKey() + ": " + entry.getValue());
+                    }
+                }
+                return null;
+            }
         }
         return null; // Employee not found
     }
@@ -87,12 +102,23 @@ public class UserAuthentication {
      * @return A specific User object depending on their role.
      */
     private User createUserFromRecord(Map<String, String> record) {
+        // Validating the record has all required fields
+        String[] requiredFields = {"Employee ID", "First Name", "Last Name", "Position"};
+        for (String field : requiredFields) {
+            if (record.get(field) == null || record.get(field).isEmpty()) {
+                throw new IllegalArgumentException("Missing required field: " + field);
+            }
+        }
+        
         int employeeID = Integer.parseInt(record.get("Employee ID"));
         String firstName = record.get("First Name");
         String lastName = record.get("Last Name");
         String email = record.get("Email");
         String password = record.get("Password");
         String position = record.get("Position");
+        
+        // Debug information
+        System.out.println("Creating user with position: " + position);
 
         // Determine the role based on the position
         String role = determineUserRole(position);
@@ -105,10 +131,11 @@ public class UserAuthentication {
                 return new Employee(employeeID, firstName, lastName, email, password, role);
             case "IT":
                 return new IT(employeeID, firstName, lastName, email, password, role);
-            case "IMMEDIATE_SUPERVISOR":
+            case "IMMEDIATE SUPERVISOR":
                 return new ImmediateSupervisor(employeeID, firstName, lastName, email, password, role);
             case "ACCOUNTING":
                 return new Accounting(employeeID, firstName, lastName, email, password, role);
+            
             default:
                 throw new IllegalArgumentException("Invalid role: " + role);
         }
@@ -120,37 +147,79 @@ public class UserAuthentication {
      * @return The role category (e.g., "HR", "EMPLOYEE", "IT", etc.).
      */
     private String determineUserRole(String position) {
-        switch (position) {
-            case "Chief Executive Officer":
-            case "Chief Operating Officer":
-            case "Chief Finance Officer":
-            case "Chief Marketing Officer":
-            case "Account Manager":
-            case "Account Team Leader":
-                return "IMMEDIATE_SUPERVISOR";
-
-            case "IT Operations and Systems":
-                return "IT";
-
-            case "HR Manager":
-            case "HR Team Leader":
-            case "HR Rank and File":
+        if (position == null) {
+            throw new IllegalArgumentException("Position cannot be null");
+        }
+        
+        // Normalize the position by trimming whitespace
+        position = position.trim();
+        
+        // Check for numeric values which would indicate an error
+        if (position.matches("\\d+")) {
+            throw new IllegalArgumentException("Position appears to be a numeric ID instead of a job title: " + position);
+        }
+        
+        // Check for executive positions (immediate supervisors)
+        if (position.equals("Chief Executive Officer") ||
+            position.equals("Chief Operating Officer") ||
+            position.equals("Chief Finance Officer") ||
+            position.equals("Chief Marketing Officer") ||
+            position.equals("Account Manager") ||
+            position.equals("Account Team Leader")) {
+            return "IMMEDIATE SUPERVISOR";
+        }
+        
+        // Check for IT position
+        else if (position.equals("IT Operations and Systems")) {
+            return "IT";
+        }
+        
+        // Check for HR positions
+        else if (position.equals("HR Manager") ||
+                 position.equals("HR Team Leader") ||
+                 position.equals("HR Rank and File")) {
+            return "HR";
+        }
+        
+        // Check for Accounting positions
+        else if (position.equals("Accounting Head") ||
+                 position.equals("Payroll Manager") ||
+                 position.equals("Payroll Team Leader") ||
+                 position.equals("Payroll Rank and File")) {
+            return "ACCOUNTING";
+        }
+        
+        // Check for regular employee positions
+        else if (position.equals("Account Rank and File") ||
+                 position.equals("Sales & Marketing") ||
+                 position.equals("Supply Chain and Logistics") ||
+                 position.equals("Customer Service and Relations")) {
+            return "EMPLOYEE";
+        }
+        
+        // If position doesn't match any known roles, use a default role based on keywords
+        else {
+            System.out.println("Position not directly matched: '" + position + "'. Attempting to infer role.");
+            
+            // Try to infer the role from the position name
+            position = position.toLowerCase();
+            
+            if (position.contains("hr") || position.contains("human resource")) {
                 return "HR";
-
-            case "Accounting Head":
-            case "Payroll Manager":
-            case "Payroll Team Leader":
-            case "Payroll Rank and File":
+            }
+            else if (position.contains("it") || position.contains("information tech") || position.contains("system")) {
+                return "IT";
+            }
+            else if (position.contains("account") || position.contains("payroll") || position.contains("financ")) {
                 return "ACCOUNTING";
-
-            case "Account Rank and File":
-            case "Sales & Marketing":
-            case "Supply Chain and Logistics":
-            case "Customer Service and Relations":
-                return "EMPLOYEE";
-
-            default:
-                throw new IllegalArgumentException("Unknown position: " + position);
+            }
+            else if (position.contains("manager") || position.contains("supervisor") || position.contains("lead")) {
+                return "IMMEDIATE SUPERVISOR";
+            }
+            else {
+                System.out.println("Unknown position detected: '" + position + "'. Defaulting to EMPLOYEE role.");
+                return "EMPLOYEE"; // Default to employee
+            }
         }
     }
 }

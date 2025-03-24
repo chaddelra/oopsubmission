@@ -7,7 +7,8 @@ import javax.swing.*;
 import oop.classes.actors.User;
 
 /**
- * Login GUI
+ * This GUI is responsible for handling user login!
+ * It checks the user's email and password, then sends them to the right landing page according to their user role!
  * @author Admin
  */
 
@@ -17,8 +18,8 @@ public class Login extends javax.swing.JFrame {
 
     public Login() {
         CSVDatabaseProcessor csvProcessor = new CSVDatabaseProcessor();
-        csvProcessor.loadUserCredentialData(); // Load user credentials
-        csvProcessor.loadEmployeeCSVData(csvProcessor.getEmployeeDetailsFilePath()); // Load employee details
+        csvProcessor.loadUserCredentialData(); // Load user credentials here!
+ 
         userAuth = new UserAuthentication(csvProcessor);
         initComponents();
     }
@@ -28,11 +29,11 @@ public class Login extends javax.swing.JFrame {
         String password = new String(jPasswordField1.getPassword());
 
         if (email.isEmpty() || password.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter both email and password", "Input Error", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Oops! Please enter both email and password!", "Input Error", JOptionPane.WARNING_MESSAGE);
             return;
         }
 
-        // Validate credentials and get the User object
+        // Checking if the user exists in the system
         User user = userAuth.validateCredentials(email, password);
 
         if (user != null) {
@@ -41,13 +42,13 @@ public class Login extends javax.swing.JFrame {
             redirectUserBasedOnRole(user);
         } else {
             System.out.println("Login failed for email: " + email);
-            JOptionPane.showMessageDialog(this, "Invalid Email or Password", "Login Failed", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Uh-oh! Invalid Email or Password", "Login Failed", JOptionPane.ERROR_MESSAGE);
         }
     }
 
     private void redirectUserBasedOnRole(User user) {
         if (user == null) {
-            JOptionPane.showMessageDialog(this, "Invalid user object.", "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Oops! Something went wrong!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -55,66 +56,39 @@ public class Login extends javax.swing.JFrame {
 
         switch (role) {
             case "HR":
-            case "EMPLOYEE":
-            case "IT":
-            case "IMMEDIATE_SUPERVISOR":
+                AdminHR adminHR = new AdminHR(user);
+                adminHR.setVisible(true);
+                break;
+            
             case "ACCOUNTING":
-                // Redirect to EmployeeSelfService page
+                AdminAccounting adminAccounting = new AdminAccounting(user);
+                adminAccounting.setVisible(true);
+                break;
+            
+            case "IT":
+                AdminIT adminIT = new AdminIT(user);
+                adminIT.setVisible(true);
+                break;
+            
+            
+            case "EMPLOYEE":
                 EmployeeSelfService employeeSelfService = new EmployeeSelfService(user);
                 employeeSelfService.setVisible(true);
-                this.dispose(); // Close the login window
                 break;
 
+            case "IMMEDIATE SUPERVISOR":
+                AdminSupervisor adminSupervisor = new AdminSupervisor(user);
+                adminSupervisor.setVisible(true);
+                break;
+                
             default:
                 JOptionPane.showMessageDialog(this, "Unknown role: " + role, "Error", JOptionPane.ERROR_MESSAGE);
-                break;
+                return; // Prevents closing the login window if role is invalid
         }
-    }
-    
-    //Will change into this if each user role will have a landing page with both regular employee features and admin features based on their role
-    /**
-     * private void redirectUserBasedOnRole(User user) {
-    if (user == null) {
-        JOptionPane.showMessageDialog(this, "Invalid user object.", "Error", JOptionPane.ERROR_MESSAGE);
-        return;
+
+        this.dispose(); // Closes the login window after opening the correct dashboard
     }
 
-    String role = user.getRole();
-
-    switch (role) {
-        case "HR":
-            HRDashboard hrDashboard = new HRDashboard(user);
-            hrDashboard.setVisible(true);
-            break;
-        
-        case "IT":
-            ITDashboard itDashboard = new ITDashboard(user);
-            itDashboard.setVisible(true);
-            break;
-        
-        case "EMPLOYEE":
-            EmployeeSelfService employeeSelfService = new EmployeeSelfService(user);
-            employeeSelfService.setVisible(true);
-            break;
-        
-        case "IMMEDIATE_SUPERVISOR":
-            SupervisorDashboard supervisorDashboard = new SupervisorDashboard(user);
-            supervisorDashboard.setVisible(true);
-            break;
-        
-        case "ACCOUNTING":
-            AccountingDashboard accountingDashboard = new AccountingDashboard(user);
-            accountingDashboard.setVisible(true);
-            break;
-
-        default:
-            JOptionPane.showMessageDialog(this, "Unknown role: " + role, "Error", JOptionPane.ERROR_MESSAGE);
-            return; // Prevents closing the login window if role is invalid
-    }
-
-    this.dispose(); // Close the login window after opening the correct dashboard
-}
-    */
 
 
 
@@ -129,7 +103,7 @@ public class Login extends javax.swing.JFrame {
         txtEmail = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         showPassword = new javax.swing.JCheckBox();
-        jLabel5 = new javax.swing.JLabel();
+        forgetPassword = new javax.swing.JLabel();
         btnLogin = new javax.swing.JButton();
         jPasswordField1 = new javax.swing.JPasswordField();
 
@@ -155,10 +129,10 @@ public class Login extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setText("Forget password?");
-        jLabel5.addMouseListener(new java.awt.event.MouseAdapter() {
+        forgetPassword.setText("Forget password?");
+        forgetPassword.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel5MouseClicked(evt);
+                forgetPasswordMouseClicked(evt);
             }
         });
 
@@ -194,7 +168,7 @@ public class Login extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(showPassword)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
-                                .addComponent(jLabel5))
+                                .addComponent(forgetPassword))
                             .addComponent(jPasswordField1)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(151, 151, 151)
@@ -220,7 +194,7 @@ public class Login extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(showPassword)
-                    .addComponent(jLabel5))
+                    .addComponent(forgetPassword))
                 .addGap(41, 41, 41)
                 .addComponent(btnLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -239,7 +213,7 @@ public class Login extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -266,10 +240,10 @@ public class Login extends javax.swing.JFrame {
        login();
     }//GEN-LAST:event_jPasswordField1ActionPerformed
 
-    private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
+    private void forgetPasswordMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_forgetPasswordMouseClicked
        JOptionPane.showMessageDialog(this, "Reset password code has been sent to your company email!", 
                                   "Password Reset", JOptionPane.INFORMATION_MESSAGE);
-    }//GEN-LAST:event_jLabel5MouseClicked
+    }//GEN-LAST:event_forgetPasswordMouseClicked
 
     /**
      * @param args the command line arguments
@@ -298,8 +272,7 @@ public class Login extends javax.swing.JFrame {
         }
         //</editor-fold>
         //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
+        
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -311,11 +284,11 @@ public class Login extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLogin;
+    private javax.swing.JLabel forgetPassword;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JCheckBox showPassword;
