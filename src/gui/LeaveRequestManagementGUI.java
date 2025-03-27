@@ -13,8 +13,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import oop.classes.actors.User;
-import oop.classes.actors.HR;
-import oop.classes.actors.ImmediateSupervisor;
 import oop.classes.management.LeaveRequestManagement;
 /**
  *This class implements the Leave Request Management interface functionality.
@@ -109,13 +107,10 @@ public class LeaveRequestManagementGUI extends javax.swing.JFrame {
      */
     public LeaveRequestManagementGUI(User user) {
         initComponents();
-
         
         // Add the action listener for employee ID combo box here
-        employeeIDComboBox.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                employeeIDComboBoxActionPerformed(evt);
-            }
+        employeeIDComboBox.addActionListener((java.awt.event.ActionEvent evt) -> {
+            employeeIDComboBoxActionPerformed(evt);
         });
         
         this.loggedInUser = user;
@@ -166,12 +161,6 @@ public class LeaveRequestManagementGUI extends javax.swing.JFrame {
                                 selectedLeaveRequestID = record.getId();
                                 break;
                             }
-                        }
-
-                        // Update UI with selected employee info
-                        // Only update if not already set to this employee
-                        if (!employeeIDComboBox.getSelectedItem().toString().equals(empId)) {
-                            employeeIDComboBox.setSelectedItem(empId);
                         }
                     }
                 } catch (Exception ex) {
@@ -451,92 +440,144 @@ public class LeaveRequestManagementGUI extends javax.swing.JFrame {
     /**
      * Filter leave requests based on combo box selections
      */
-    private void filterLeaveRequests() {
-        String selectedEmployeeID = employeeIDComboBox.getSelectedItem().toString();
-        String selectedMonth = monthComboBox.getSelectedItem().toString();
-        String selectedYear = yearComboBox.getSelectedItem().toString();
-        
-        // Create a new filtered list
-        List<LeaveRequestRecord> filteredRecords = new ArrayList<>();
-        
-        for (LeaveRequestRecord record : leaveRequestRecords) {
-            boolean matchesEmployeeID = selectedEmployeeID.equals("All") || 
-                                      String.valueOf(record.getEmployeeID()).equals(selectedEmployeeID);
-            
-            // Extract month and year from the date (assuming format MM/DD/YYYY)
-            boolean matchesMonth = true;
-            boolean matchesYear = true;
-            
-            if (!selectedMonth.equals("All")) {
-                String dateStr = record.getDate();
-                try {
-                    String[] dateParts = dateStr.split("/");
-                    if (dateParts.length >= 3) {
-                        int monthNum = Integer.parseInt(dateParts[0]);
-                        String monthName = getMonthName(monthNum);
-                        matchesMonth = selectedMonth.equals(monthName);
+        private void filterLeaveRequests() {
+            String selectedEmployeeID = employeeIDComboBox.getSelectedItem().toString();
+            String selectedMonth = monthComboBox.getSelectedItem().toString();
+            String selectedYear = yearComboBox.getSelectedItem().toString();
+
+            // Create a new filtered list
+            List<LeaveRequestRecord> filteredRecords = new ArrayList<>();
+
+            for (LeaveRequestRecord record : leaveRequestRecords) {
+                boolean matchesEmployeeID = selectedEmployeeID.equals("All") || 
+                                          String.valueOf(record.getEmployeeID()).equals(selectedEmployeeID);
+
+                // Extract month and year from the date (assuming format MM/DD/YYYY)
+                boolean matchesMonth = true;
+                boolean matchesYear = true;
+
+                if (!selectedMonth.equals("All")) {
+                    String dateStr = record.getDate();
+                    try {
+                        String[] dateParts = dateStr.split("/");
+                        if (dateParts.length >= 3) {
+                            int monthNum = Integer.parseInt(dateParts[0]);
+                            String monthName = getMonthName(monthNum);
+                            matchesMonth = selectedMonth.equals(monthName);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error parsing date: " + dateStr);
                     }
-                } catch (Exception e) {
-                    System.err.println("Error parsing date: " + dateStr);
+                }
+
+                if (!selectedYear.equals("All")) {
+                    String dateStr = record.getDate();
+                    try {
+                        String[] dateParts = dateStr.split("/");
+                        if (dateParts.length >= 3) {
+                            String year = dateParts[2];
+                            matchesYear = selectedYear.equals(year);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Error parsing date: " + dateStr);
+                    }
+                }
+
+                if (matchesEmployeeID && matchesMonth && matchesYear) {
+                    filteredRecords.add(record);
                 }
             }
-            
-            if (!selectedYear.equals("All")) {
-                String dateStr = record.getDate();
-                try {
-                    String[] dateParts = dateStr.split("/");
-                    if (dateParts.length >= 3) {
-                        String year = dateParts[2];
-                        matchesYear = selectedYear.equals(year);
-                    }
-                } catch (Exception e) {
-                    System.err.println("Error parsing date: " + dateStr);
+
+            // Update the table with filtered records
+            DefaultTableModel model = new DefaultTableModel();
+            model.addColumn("Date");
+            model.addColumn("ID #");
+            model.addColumn("First Name");
+            model.addColumn("Last Name");
+            model.addColumn("Position");
+            model.addColumn("Status");
+            model.addColumn("Supervisor");
+            model.addColumn("Type of Leave");
+            model.addColumn("Note");
+            model.addColumn("Start");
+            model.addColumn("End");
+            model.addColumn("Leave Status");
+            model.addColumn("VL Remaining");
+            model.addColumn("SL Remaining");
+
+            for (LeaveRequestRecord record : filteredRecords) {
+                model.addRow(new Object[] {
+                    record.getDate(),
+                    record.getEmployeeID(),
+                    record.getFirstName(),
+                    record.getLastName(),
+                    record.getPosition(),
+                    record.getStatus(),
+                    record.getSupervisor(),
+                    record.getLeaveType(),
+                    record.getNote(),
+                    record.getStartDate(),
+                    record.getEndDate(),
+                    record.getLeaveStatus(),
+                    record.getVlRemaining(),
+                    record.getSlRemaining()
+                });
+            }
+
+            jTable1.setModel(model);
+
+            // Reapply the table configuration after setting the new model
+            jTable1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
+            // Set column widths for better display
+            for (int i = 0; i < jTable1.getColumnCount(); i++) {
+                switch (i) {
+                    case 0: // Date
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(80);
+                        break;
+                    case 1: // ID
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(60);
+                        break;
+                    case 2: // First Name
+                    case 3: // Last Name
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(100);
+                        break;
+                    case 4: // Position
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(150);
+                        break;
+                    case 5: // Status
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(80);
+                        break;
+                    case 6: // Supervisor
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(180);
+                        break;
+                    case 7: // Type of Leave
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(120);
+                        break;
+                    case 8: // Note
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(300); // Make wider to force scrolling
+                        break;
+                    case 9: // Start
+                    case 10: // End
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(80);
+                        break;
+                    case 11: // Leave Status
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(100);
+                        break;
+                    case 12: // VL Remaining
+                    case 13: // SL Remaining
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(100);
+                        break;
+                    default:
+                        jTable1.getColumnModel().getColumn(i).setPreferredWidth(100);
+                        break;
                 }
             }
-            
-            if (matchesEmployeeID && matchesMonth && matchesYear) {
-                filteredRecords.add(record);
-            }
+
+            // Ensure scrollbars appear when needed
+            jScrollPane1.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            jScrollPane1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         }
-        
-        // Update the table with filtered records
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("Date");
-        model.addColumn("ID #");
-        model.addColumn("First Name");
-        model.addColumn("Last Name");
-        model.addColumn("Position");
-        model.addColumn("Status");
-        model.addColumn("Supervisor");
-        model.addColumn("Type of Leave");
-        model.addColumn("Note");
-        model.addColumn("Start");
-        model.addColumn("End");
-        model.addColumn("Leave Status");
-        model.addColumn("VL Remaining");
-        model.addColumn("SL Remaining");
-        
-        for (LeaveRequestRecord record : filteredRecords) {
-            model.addRow(new Object[] {
-                record.getDate(),
-                record.getEmployeeID(),
-                record.getFirstName(),
-                record.getLastName(),
-                record.getPosition(),
-                record.getStatus(),
-                record.getSupervisor(),
-                record.getLeaveType(),
-                record.getNote(),
-                record.getStartDate(),
-                record.getEndDate(),
-                record.getLeaveStatus(),
-                record.getVlRemaining(),
-                record.getSlRemaining()
-            });
-        }
-        
-        jTable1.setModel(model);
-    }
 
     /**
      * Helper method to convert month number to month name
@@ -548,71 +589,6 @@ public class LeaveRequestManagementGUI extends javax.swing.JFrame {
             return months[monthNum - 1];
         }
         return "";
-    }
-
-    /**
-     * Determine department based on position - same as in ImmediateSupervisor class
-     */
-    private String determineDepartmentFromPosition(String position) {
-        if (position == null) {
-            return "Other";
-        }
-
-        position = position.trim();
-
-        // Leadership positions
-        if (position.equals("Chief Executive Officer") || 
-            position.equals("Chief Operating Officer") || 
-            position.equals("Chief Finance Officer") || 
-            position.equals("Chief Marketing Officer")) {
-            return "Leadership";
-        }
-
-        // HR Department
-        else if (position.equals("HR Manager") || 
-                 position.equals("HR Team Leader") || 
-                 position.equals("HR Rank and File")) {
-            return "HR";
-        }
-
-        // IT Department
-        else if (position.equals("IT Operations and Systems") ||
-                 position.toLowerCase().contains("it ")) {
-            return "IT";
-        }
-
-        // Accounting Department
-        else if (position.equals("Accounting Head") || 
-                 position.equals("Payroll Manager") || 
-                 position.equals("Payroll Team Leader") || 
-                 position.equals("Payroll Rank and File")) {
-            return "Accounting";
-        }
-
-        // Accounts Department
-        else if (position.equals("Account Manager") || 
-                 position.equals("Account Team Leader") || 
-                 position.equals("Account Rank and File")) {
-            return "Accounts";
-        }
-
-        // Sales and Marketing Department
-        else if (position.equals("Sales & Marketing")) {
-            return "Sales and Marketing";
-        }
-
-        // Supply Chain and Logistics Department
-        else if (position.equals("Supply Chain and Logistics")) {
-            return "Supply Chain and Logistics";
-        }
-
-        // Customer Service Department
-        else if (position.equals("Customer Service and Relations")) {
-            return "Customer Service";
-        }
-
-        // If no specific match is found
-        return "Other";
     }
 
     /**
@@ -1266,10 +1242,8 @@ public class LeaveRequestManagementGUI extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new LeaveRequestManagementGUI().setVisible(true);
-            }
+        java.awt.EventQueue.invokeLater(() -> {
+            new LeaveRequestManagementGUI().setVisible(true);
         });
     }
 
