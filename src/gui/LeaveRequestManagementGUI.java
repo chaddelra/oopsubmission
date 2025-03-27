@@ -1199,17 +1199,24 @@ public class LeaveRequestManagementGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_denyattndncbtnHRActionPerformed
    //Back button
     private void backattndncbttnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backattndncbttnActionPerformed
-        // Close this window once back button's clicked
-        dispose();
-
-        // Open admin page
-        if (loggedInUser != null) {
-            if (loggedInUser.getRole().equals("HR")) {
-                new AdminHR(loggedInUser).setVisible(true);
-            } else if (loggedInUser.getRole().equals("IMMEDIATE SUPERVISOR")) {
-                new AdminSupervisor(loggedInUser).setVisible(true);
-            }
+    // Close this window
+    dispose();
+    
+    // Create new dashboard with the current user object
+    // Use getRole() to determine which screen to return to
+    if (loggedInUser != null) {
+        String role = loggedInUser.getRole().toUpperCase();
+        if (role.equals("HR")) {
+            new AdminHR(loggedInUser).setVisible(true);
+        } else if (role.contains("SUPERVISOR")) {
+            new AdminSupervisor(loggedInUser).setVisible(true);
+        } else {
+            // Fallback for other roles
+            JOptionPane.showMessageDialog(null, 
+                "Unknown role: " + loggedInUser.getRole(), 
+                "Navigation Error", JOptionPane.ERROR_MESSAGE);
         }
+    }
     }//GEN-LAST:event_backattndncbttnActionPerformed
     //Employee ID Filter
     private void employeeIDComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_employeeIDComboBoxActionPerformed

@@ -13,7 +13,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
+import oop.classes.actors.HR;
 import oop.classes.actors.User;
+import oop.classes.management.AttendanceTracking;
+import oop.classes.management.LeaveRequestManagement;
 
 
 //public class  extends javax.swing.JFrame { --> no need to specify javax.swing.* since it was already impored up there!
@@ -385,14 +388,57 @@ public class AdminHR extends JFrame {
     }//GEN-LAST:event_requestleaveemppgPBActionPerformed
 
     private void leaveRequestManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leaveRequestManagementActionPerformed
-    new LeaveRequestManagementGUI(loggedInUser).setVisible(true);
-    this.dispose(); // Close the current AdminHR page 
+    // Add debug information
+    System.out.println("Debug - leaveRequestManagementActionPerformed:");
+    System.out.println("  User class: " + loggedInUser.getClass().getName());
+    System.out.println("  Implements LeaveRequestManagement: " + (loggedInUser instanceof LeaveRequestManagement));
+    
+    // Check if the user actually implements the required interface
+    if (!(loggedInUser instanceof LeaveRequestManagement)) {
+        // Create a new HR instance with the current user's data
+        HR hrUser = new HR(
+            loggedInUser.getEmployeeID(),
+            loggedInUser.getFirstName(),
+            loggedInUser.getLastName(),
+            loggedInUser.getEmail(),
+            loggedInUser.getPassword(),
+            loggedInUser.getRole()
+        );
+        
+        // Use the HR user instead
+        new LeaveRequestManagementGUI(hrUser).setVisible(true);
+    } else {
+        // Original code
+        new LeaveRequestManagementGUI(loggedInUser).setVisible(true);
+    }
+    this.dispose();
     }//GEN-LAST:event_leaveRequestManagementActionPerformed
 
     private void attendanceeTrackingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attendanceeTrackingActionPerformed
-    // Pass parameters of logeedInUser and allows for polymorphic behavior (HR & Imemdiate Supervisor)
-    new AttendanceTrackingGUI(loggedInUser).setVisible(true);
-        this.dispose(); // Close the current AdminHR page 
+    // Add debug information
+    System.out.println("Debug - attendanceeTrackingActionPerformed:");
+    System.out.println("  User class: " + loggedInUser.getClass().getName());
+    System.out.println("  Implements AttendanceTracking: " + (loggedInUser instanceof AttendanceTracking));
+    
+    // Check if the user actually implements the required interface
+    if (!(loggedInUser instanceof AttendanceTracking)) {
+        // Create a new HR instance with the current user's data
+        HR hrUser = new HR(
+            loggedInUser.getEmployeeID(),
+            loggedInUser.getFirstName(),
+            loggedInUser.getLastName(),
+            loggedInUser.getEmail(),
+            loggedInUser.getPassword(),
+            loggedInUser.getRole()
+        );
+        
+        // Use the HR user instead
+        new AttendanceTrackingGUI(hrUser).setVisible(true);
+    } else {
+        // Original code
+        new AttendanceTrackingGUI(loggedInUser).setVisible(true);
+    }
+    this.dispose();
     }//GEN-LAST:event_attendanceeTrackingActionPerformed
 
     private void empManagementActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_empManagementActionPerformed

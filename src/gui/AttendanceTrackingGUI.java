@@ -883,7 +883,7 @@ public class AttendanceTrackingGUI extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(18, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -893,13 +893,13 @@ public class AttendanceTrackingGUI extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(324, 324, 324)
                         .addComponent(findEmployeeBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(15, 18, Short.MAX_VALUE))
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(254, 254, 254)
-                .addComponent(approveattndncbtnHR1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(241, 241, 241)
                 .addComponent(approveAllBttn)
-                .addGap(32, 32, 32)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(approveattndncbtnHR1)
+                .addGap(45, 45, 45)
                 .addComponent(denyAllBttn)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(denyattndncbtnHR)
@@ -1237,15 +1237,22 @@ public class AttendanceTrackingGUI extends javax.swing.JFrame {
     }//GEN-LAST:event_denyAllBttnActionPerformed
 
     private void backattndncbttnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backattndncbttnActionPerformed
-    // Close this window once back button's clicked
+    // Close this window
     dispose();
     
-    // Open admin page 
+    // Create new dashboard with the current user object
+    // Use getRole() to determine which screen to return to
     if (loggedInUser != null) {
-        if (loggedInUser.getRole().equals("HR")) {
+        String role = loggedInUser.getRole().toUpperCase();
+        if (role.equals("HR")) {
             new AdminHR(loggedInUser).setVisible(true);
-        } else if (loggedInUser.getRole().equals("IMMEDIATE SUPERVISOR")) {
+        } else if (role.contains("SUPERVISOR")) {
             new AdminSupervisor(loggedInUser).setVisible(true);
+        } else {
+            // Fallback for other roles
+            JOptionPane.showMessageDialog(null, 
+                "Unknown role: " + loggedInUser.getRole(), 
+                "Navigation Error", JOptionPane.ERROR_MESSAGE);
         }
     }
     }//GEN-LAST:event_backattndncbttnActionPerformed

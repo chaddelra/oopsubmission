@@ -50,7 +50,7 @@ public class HR extends Employee implements AttendanceTracking, LeaveRequestMana
     @Override
     public boolean denyAttendance(int attendanceID, String reason) {
         System.out.println("HR denied attendance ID: " + attendanceID + " - Reason: " + reason);
-        return false;
+        return true;
         
     }
     
