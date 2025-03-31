@@ -46,18 +46,23 @@ public class PayrollManagement extends javax.swing.JFrame {
         this.salaryCalculation = new SalaryCalculation();
         this.deductionCalculation = new DeductionCalculation();
         this.csvProcessor = new CSVDatabaseProcessor();
-        
+
         // Load attendance data - important for payroll calculations
         this.csvProcessor.loadAttendanceData();
-        
+
         // Initialize to current payroll month
         this.currentPayrollMonth = YearMonth.now();
-        
+
         initComponents();
         setupTableColumns();
         setupTableProperties();
         populateEmployeeDropdown();
-        
+
+        // Set default selection to current month and year
+        selectMonthJComboBox2.setSelectedItem(currentPayrollMonth.getMonth()
+            .getDisplayName(TextStyle.FULL, Locale.ENGLISH));
+        selectYearJComboBox3.setSelectedItem(String.valueOf(currentPayrollMonth.getYear()));
+
         // Initially disable approval/denial buttons until payslips are generated
         updateButtonStates();
     }
@@ -156,19 +161,9 @@ public class PayrollManagement extends javax.swing.JFrame {
             String selectedYearStr = (String) selectYearJComboBox3.getSelectedItem();
 
             // Set the current payroll month based on selection
-            // Handle the "ALL" case for month and year
-            if ("ALL".equalsIgnoreCase(selectedMonthStr) || "All".equals(selectedMonthStr)) {
-                // If "ALL" is selected, use the current month
-                currentPayrollMonth = YearMonth.now();
-            } else {
-                // Otherwise, parse the selected month and year
-                Month selectedMonth = Month.valueOf(selectedMonthStr.toUpperCase());
-                int selectedYear = "ALL".equalsIgnoreCase(selectedYearStr) || "All".equals(selectedYearStr) 
-                    ? YearMonth.now().getYear() 
-                    : Integer.parseInt(selectedYearStr);
-
-                currentPayrollMonth = YearMonth.of(selectedYear, selectedMonth);
-            }
+            Month selectedMonth = Month.valueOf(selectedMonthStr.toUpperCase());
+            int selectedYear = Integer.parseInt(selectedYearStr);
+            currentPayrollMonth = YearMonth.of(selectedYear, selectedMonth);
 
             // Get employee IDs to process
             List<String> employeeIds = new ArrayList<>();
@@ -526,14 +521,14 @@ public class PayrollManagement extends javax.swing.JFrame {
             }
         });
 
-        selectMonthJComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
+        selectMonthJComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }));
         selectMonthJComboBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectMonthJComboBox2ActionPerformed(evt);
             }
         });
 
-        selectYearJComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All", "2020", "2021", "2022", "2023", "2024", "2025" }));
+        selectYearJComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "2024", "2025" }));
         selectYearJComboBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 selectYearJComboBox3ActionPerformed(evt);
@@ -854,45 +849,29 @@ public class PayrollManagement extends javax.swing.JFrame {
     }//GEN-LAST:event_denyBttnActionPerformed
     //Generate payslip button action; basically generates or calculates all employee's payroll for a pay period
     private void generatePayslipActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_generatePayslipActionPerformed
-         
-        String selectedEmployeeId = (String) selectEmpJComboBox1.getSelectedItem();
-        String selectedMonthStr = (String) selectMonthJComboBox2.getSelectedItem();
-        String selectedYearStr = (String) selectYearJComboBox3.getSelectedItem();
-        
-        // Handle the "ALL" case for display purposes
-        String displayMonth, displayYear;
-        
-        if ("ALL".equalsIgnoreCase(selectedMonthStr) || "All".equals(selectedMonthStr)) {
-            displayMonth = YearMonth.now().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-        } else {
-            displayMonth = selectedMonthStr;
-        }
-        
-        if ("ALL".equalsIgnoreCase(selectedYearStr) || "All".equals(selectedYearStr)) {
-            displayYear = String.valueOf(YearMonth.now().getYear());
-        } else {
-            displayYear = selectedYearStr;
-        }
-        
-        // Show loading message
-        JOptionPane.showMessageDialog(this, 
-            "Calculating payroll for " + 
-            (selectedEmployeeId.equalsIgnoreCase("ALL") || selectedEmployeeId.equals("All") ? "all employees" : "employee " + selectedEmployeeId) + 
-            " for " + displayMonth + " " + displayYear + "...",
-            "Generating Payslips",
-            JOptionPane.INFORMATION_MESSAGE);
-        
-        // Load the payroll data
-        loadPayrollData();
-        
-        // Show confirmation message
-        int employeeCount = jTable1.getRowCount();
-        JOptionPane.showMessageDialog(this, 
-            "Successfully generated payslips for " + employeeCount + " employees.\n" +
-            "Pay period: " + displayMonth + " " + displayYear + "\n\n" +
-            "You can now approve or deny the payroll.",
-            "Payslips Generated",
-            JOptionPane.INFORMATION_MESSAGE);
+    String selectedEmployeeId = (String) selectEmpJComboBox1.getSelectedItem();
+    String selectedMonthStr = (String) selectMonthJComboBox2.getSelectedItem();
+    String selectedYearStr = (String) selectYearJComboBox3.getSelectedItem();
+    
+    // Show loading message
+    JOptionPane.showMessageDialog(this, 
+        "Calculating payroll for " + 
+        (selectedEmployeeId.equalsIgnoreCase("ALL") || selectedEmployeeId.equals("All") ? "all employees" : "employee " + selectedEmployeeId) + 
+        " for " + selectedMonthStr + " " + selectedYearStr + "...",
+        "Generating Payslips",
+        JOptionPane.INFORMATION_MESSAGE);
+    
+    // Load the payroll data
+    loadPayrollData();
+    
+    // Show confirmation message
+    int employeeCount = jTable1.getRowCount();
+    JOptionPane.showMessageDialog(this, 
+        "Successfully generated payslips for " + employeeCount + " employees.\n" +
+        "Pay period: " + selectedMonthStr + " " + selectedYearStr + "\n\n" +
+        "You can now approve or deny the payroll.",
+        "Payslips Generated",
+        JOptionPane.INFORMATION_MESSAGE);
 
     }//GEN-LAST:event_generatePayslipActionPerformed
 
